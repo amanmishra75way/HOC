@@ -96,3 +96,94 @@ If you're only sharing styles, prefer styled-components or utility classes.
 
 If you're creating UI layouts, use composition (children) instead.
 
+
+
+# Render Props 
+
+✅ What Are Render Props in React?
+Render Props is a pattern in React where a component shares its logic with other components by passing a function as a prop — that function returns JSX.
+
+📘 Definition
+A render prop is a function prop that a component calls to know what to render.
+
+🧠 Why Do We Use Render Props?
+Code reuse: Share logic between components without duplicating code.
+
+Separation of concerns: Separate logic (state, effects) from UI.
+
+Flexibility: Let the parent decide what UI to render using shared logic.
+
+🔧 Syntax Example
+jsx
+Copy
+Edit
+const MouseTracker = ({ render }) => {
+  const [position, setPosition] = React.useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e) => {
+    setPosition({ x: e.clientX, y: e.clientY });
+  };
+
+  return (
+    <div onMouseMove={handleMouseMove}>
+      {render(position)}
+    </div>
+  );
+};
+Usage:
+jsx
+Copy
+Edit
+<MouseTracker render={({ x, y }) => (
+  <h1>Mouse position: {x}, {y}</h1>
+)} />
+🧰 Common Use Cases for Render Props
+Use Case	Description
+✅ Mouse position tracking	Share logic about cursor position
+✅ Form state handling	Manage form data and validation (e.g. FormHandler)
+✅ Toggling UI	Show/hide components like modals, dropdowns, etc.
+✅ Authentication status	Share login state and redirect logic
+✅ Animation/state logic	Manage animation state or effects independently of the UI
+
+📦 Real-World Example: Toggle
+jsx
+Copy
+Edit
+const Toggle = ({ render }) => {
+  const [isOn, setIsOn] = React.useState(false);
+
+  const toggle = () => setIsOn(!isOn);
+
+  return render({ isOn, toggle });
+};
+
+// Usage
+<Toggle render={({ isOn, toggle }) => (
+  <div>
+    <button onClick={toggle}>
+      {isOn ? "Turn Off" : "Turn On"}
+    </button>
+    <p>Status: {isOn ? "ON" : "OFF"}</p>
+  </div>
+)} />
+🆚 Render Props vs HOC vs Custom Hooks
+Feature	Render Props	HOC	Custom Hook
+API Style	Function as prop	Function that wraps a component	Hook function
+Code reuse	✅	✅	✅
+UI flexibility	✅ (very high)	Medium	Medium
+Nesting/Readability	Can get deeply nested 🟠	Can become unreadable 🟠	✅ Clean & flat
+Best for	Fine control of rendering	Wrapping behavior	Modern React apps
+
+⚠️ Downsides of Render Props
+Can lead to "prop drilling" or nested trees (callback hell-style) if overused.
+
+Hooks are often a better modern alternative — use Render Props when you need to customize rendering based on shared logic.
+
+✅ Summary
+Render props = Function that returns UI, passed to a component.
+
+Used to reuse logic while letting parent decide what to render.
+
+Great for: mouse position, toggle state, auth, form state, etc.
+
+Often replaced by custom hooks in modern React, but still useful.
